@@ -47,6 +47,11 @@ export async function POST(request: NextRequest) {
       reverseGeocode(lat, lng),
     ]);
 
+    // デバッグ: Google APIの応答確認用（本番安定後に削除）
+    console.log("Transit status:", transitData.status);
+    console.log("Transit routes:", transitData.routes.length);
+    console.log("Driving data:", drivingData);
+
     const fullTaxiFare = calculateTaxiFare(drivingData.distanceKm, true);
 
     const options: RouteOption[] = [];
@@ -120,7 +125,17 @@ export async function POST(request: NextRequest) {
       isDemo: false,
     };
 
-    return NextResponse.json(result);
+    // デバッグ情報を一時的に付与
+    return NextResponse.json({
+      ...result,
+      _debug: {
+        transitStatus: transitData.status,
+        transitRoutes: transitData.routes.length,
+        drivingData,
+        hasApiKey: !!process.env.GOOGLE_MAPS_API_KEY,
+        apiKeyPrefix: process.env.GOOGLE_MAPS_API_KEY?.slice(0, 10) + "...",
+      },
+    });
   } catch (error) {
     console.error("Search error:", error);
     return NextResponse.json(
