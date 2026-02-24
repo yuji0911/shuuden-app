@@ -125,13 +125,15 @@ export async function POST(request: NextRequest) {
       isDemo: false,
     };
 
-    // デバッグ情報を一時的に付与
+    // デバッグ情報を一時的に付与（本番安定後に削除）
     return NextResponse.json({
       ...result,
       _debug: {
+        version: "v2",
         transitStatus: transitData.status,
         transitRoutes: transitData.routes.length,
         drivingData,
+        locationName,
         hasApiKey: !!process.env.GOOGLE_MAPS_API_KEY,
         apiKeyPrefix: process.env.GOOGLE_MAPS_API_KEY?.slice(0, 10) + "...",
       },
