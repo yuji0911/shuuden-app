@@ -88,7 +88,6 @@ export async function getDrivingDistance(
   const data: DirectionsResponse = await res.json();
 
   if (data.routes.length === 0) {
-    console.log("Driving API status:", data.status, "error_message" in data ? (data as Record<string, unknown>).error_message : "");
     return { distanceKm: 0, durationMin: 0 };
   }
 
